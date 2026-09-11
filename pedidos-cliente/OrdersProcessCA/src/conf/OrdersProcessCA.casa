@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<casa xmlns="http://java.sun.com/xml/ns/casa" xmlns:ns1="OrdersProcessCA" xmlns:ns2="http://rs.udc.es/orders" xmlns:ns3="http://rs.udc.es/inventory" xmlns:ns4="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess" xmlns:ns5="http://rs.udc.es/shipping" xmlns:ns6="http://rs.udc.es/billing" xmlns:ns7="http://enterprise.netbeans.org/bpel/OrdersProcessBpel/ordersProcessBpel" xmlns:xlink="http://www.w3.org/2000/xlink">
+    <endpoints>
+        <endpoint endpoint-name="OrderService" interface-name="ns2:OrderProvider" name="endpoint1" service-name="ns1:OrdersProcessCAService2"/>
+        <endpoint endpoint-name="InventoryService" interface-name="ns3:InventoryProvider" name="endpoint2" service-name="ns1:OrdersProcessCAService3"/>
+        <endpoint endpoint-name="OrderProcess" interface-name="ns4:OrderProcessPortType" name="endpoint3" service-name="ns1:OrdersProcessCAService1"/>
+        <endpoint endpoint-name="ShippingService" interface-name="ns5:ShippingProvider" name="endpoint4" service-name="ns1:OrdersProcessCAService5"/>
+        <endpoint endpoint-name="BillingService" interface-name="ns6:BillingProvider" name="endpoint5" service-name="ns1:OrdersProcessCAService4"/>
+        <endpoint display-name="ClientPL" endpoint-name="OrderProcessPortTypeRole_myRole" file-path="ordersProcessBpel.bpel" interface-name="ns4:OrderProcessPortType" name="endpoint6" process-name="ordersProcessBpel" service-name="ns7:ClientPL"/>
+        <endpoint display-name="OrderPL" endpoint-name="OrderProviderRole_partnerRole" file-path="ordersProcessBpel.bpel" interface-name="ns2:OrderProvider" name="endpoint7" process-name="ordersProcessBpel" service-name="ns7:OrderPL"/>
+        <endpoint display-name="InventoryPL" endpoint-name="InventoryProviderRole_partnerRole" file-path="ordersProcessBpel.bpel" interface-name="ns3:InventoryProvider" name="endpoint8" process-name="ordersProcessBpel" service-name="ns7:InventoryPL"/>
+        <endpoint display-name="BillingPL" endpoint-name="BillingProviderRole_partnerRole" file-path="ordersProcessBpel.bpel" interface-name="ns6:BillingProvider" name="endpoint9" process-name="ordersProcessBpel" service-name="ns7:BillingPL"/>
+        <endpoint display-name="ShippingPL" endpoint-name="ShippingProviderRole_partnerRole" file-path="ordersProcessBpel.bpel" interface-name="ns5:ShippingProvider" name="endpoint10" process-name="ordersProcessBpel" service-name="ns7:ShippingPL"/>
+    </endpoints>
+    <service-units>
+        <service-engine-service-unit artifacts-zip="OrdersProcessBpel.jar" component-name="sun-bpel-engine" defined="true" description="Represents this Service Unit" internal="true" name="OrdersProcessCA-OrdersProcessBpel" unit-name="OrdersProcessBpel" unknown="false" x="135" y="100">
+            <provides endpoint="endpoint6"/>
+            <consumes endpoint="endpoint7"/>
+            <consumes endpoint="endpoint8"/>
+            <consumes endpoint="endpoint9"/>
+            <consumes endpoint="endpoint10"/>
+        </service-engine-service-unit>
+        <binding-component-service-unit artifacts-zip="sun-http-binding.jar" component-name="sun-http-binding" description="Represents this Service Unit" name="OrdersProcessCA-sun-http-binding" unit-name="sun-http-binding">
+            <ports>
+                <port bindingType="soap" x="67" y="144">
+                    <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService1']/port[@name='OrderProcess'])" xlink:type="simple"/>
+                    <consumes endpoint="endpoint3"/>
+                    <provides endpoint="endpoint3"/>
+                </port>
+                <port bindingType="soap" x="67" y="503">
+                    <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService2']/port[@name='OrderService'])" xlink:type="simple"/>
+                    <consumes endpoint="endpoint1"/>
+                    <provides endpoint="endpoint1"/>
+                </port>
+                <port bindingType="soap" x="67" y="582">
+                    <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService3']/port[@name='InventoryService'])" xlink:type="simple"/>
+                    <consumes endpoint="endpoint2"/>
+                    <provides endpoint="endpoint2"/>
+                </port>
+                <port x="67" y="424">
+                    <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService4']/port[@name='BillingService'])" xlink:type="simple"/>
+                    <consumes endpoint="endpoint5"/>
+                    <provides endpoint="endpoint5"/>
+                </port>
+                <port x="67" y="345">
+                    <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService5']/port[@name='ShippingService'])" xlink:type="simple"/>
+                    <consumes endpoint="endpoint4"/>
+                    <provides endpoint="endpoint4"/>
+                </port>
+            </ports>
+        </binding-component-service-unit>
+    </service-units>
+    <connections>
+        <connection consumer="endpoint10" mode="" provider="endpoint4" route-type="" routing-rule="" state="unchanged"/>
+        <connection consumer="endpoint9" mode="" provider="endpoint5" route-type="" routing-rule="" state="unchanged"/>
+        <connection consumer="endpoint3" mode="" provider="endpoint6" route-type="" routing-rule="" state="new"/>
+        <connection consumer="endpoint7" mode="" provider="endpoint1" route-type="" routing-rule="" state="unchanged"/>
+        <connection consumer="endpoint8" mode="" provider="endpoint2" route-type="" routing-rule="" state="unchanged"/>
+    </connections>
+    <porttypes>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/portType[@name='dummyCasaPortType'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/portType[@name='dummyCasaPortType'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessBpel/InventoryService.wsdl#xpointer(/definitions/portType[@name='InventoryProvider'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessBpel/ShippingService.wsdl#xpointer(/definitions/portType[@name='ShippingProvider'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessBpel/BillingService.wsdl#xpointer(/definitions/portType[@name='BillingProvider'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessBpel/OrderService.wsdl#xpointer(/definitions/portType[@name='OrderProvider'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessBpel/OrderProcess.wsdl#xpointer(/definitions/portType[@name='OrderProcessPortType'])" xlink:type="simple"/>
+    </porttypes>
+    <bindings>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding1'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding2'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding3'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding4'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding5'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding1'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding2'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding3'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding4'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/binding[@name='casaBinding5'])" xlink:type="simple"/>
+    </bindings>
+    <services>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService1'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService2'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService3'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService4'])" xlink:type="simple"/>
+        <link xlink:href="../jbiasa/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService5'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService1'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService2'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService3'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService4'])" xlink:type="simple"/>
+        <link xlink:href="../jbiServiceUnits/OrdersProcessCA.wsdl#xpointer(/definitions/service[@name='OrdersProcessCAService5'])" xlink:type="simple"/>
+    </services>
+    <regions>
+        <region name="WSDL Endpoints" width="150"/>
+        <region name="JBI Modules" width="500"/>
+        <region name="External Modules" width="200"/>
+    </regions>
+</casa>
