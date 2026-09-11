@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by XML-WS Runtime (https://github.com/eclipse-ee4j/metro-jax-ws). Runtime's version is XML-WS Runtime 4.0.3 git-revision#a57c222. --><xs:schema xmlns:tns="http://rs.udc.es/orders" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://rs.udc.es/orders">
+
+<xs:element name="OrderException" nillable="true" type="xs:string"/>
+
+<xs:element name="changeStatus" type="tns:changeStatus"/>
+
+<xs:element name="changeStatusResponse" type="tns:changeStatusResponse"/>
+
+<xs:element name="findOrder" type="tns:findOrder"/>
+
+<xs:element name="findOrderResponse" type="tns:findOrderResponse"/>
+
+<xs:complexType name="findOrder">
+<xs:sequence>
+<xs:element name="orderId" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findOrderResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:order" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="order">
+<xs:sequence>
+<xs:element name="customerId" type="xs:long" minOccurs="0"/>
+<xs:element name="orderDate" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="orderId" type="xs:long" minOccurs="0"/>
+<xs:element name="orderLines" type="tns:orderLine" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="orderStatus" type="tns:orderStatus" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="orderLine">
+<xs:sequence>
+<xs:element name="price" type="xs:double" minOccurs="0"/>
+<xs:element name="productId" type="xs:long" minOccurs="0"/>
+<xs:element name="quantity" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="changeStatus">
+<xs:sequence>
+<xs:element name="orderId" type="xs:long" minOccurs="0"/>
+<xs:element name="orderStatus" type="tns:orderStatus" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="changeStatusResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:order" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="orderStatus">
+<xs:restriction base="xs:string">
+<xs:enumeration value="PENDING"/>
+<xs:enumeration value="PROCESSING"/>
+<xs:enumeration value="PROCESSED"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by XML-WS Runtime (https://github.com/eclipse-ee4j/metro-jax-ws). Runtime's version is XML-WS Runtime 4.0.3 git-revision#a57c222. --><xs:schema xmlns:tns="http://rs.udc.es/inventory" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://rs.udc.es/inventory">
+
+<xs:element name="InventoryException" nillable="true" type="xs:string"/>
+
+<xs:element name="addInventory" type="tns:addInventory"/>
+
+<xs:element name="addInventoryResponse" type="tns:addInventoryResponse"/>
+
+<xs:element name="checkInventory" type="tns:checkInventory"/>
+
+<xs:element name="checkInventoryResponse" type="tns:checkInventoryResponse"/>
+
+<xs:complexType name="checkInventory">
+<xs:sequence>
+<xs:element name="orderId" type="xs:long"/>
+<xs:element name="productId" type="xs:long"/>
+<xs:element name="quantity" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="checkInventoryResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addInventory">
+<xs:sequence>
+<xs:element name="productId" type="xs:long"/>
+<xs:element name="quantity" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="addInventoryResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

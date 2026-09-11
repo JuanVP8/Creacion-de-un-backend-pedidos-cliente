@@ -1,0 +1,12 @@
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\ClientOrderService.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\ClientOrderServiceFactory.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\dto\ClientCustomerDtoJaxb.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\dto\ClientOrderDtoJaxb.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\dto\ClientOrderLineDtoJaxb.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\dto\ClientOrderSummaryDtoJaxb.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\dto\ClientOrderSummaryDtoJaxbList.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\dto\ClientStatusDtoJaxb.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\RestClientOrderService.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\RestClientOrderServiceJson.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\service\rest\RestClientOrderServiceXml.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-client\src\main\java\es\udc\rs\orders\client\ui\OrderServiceClient.java

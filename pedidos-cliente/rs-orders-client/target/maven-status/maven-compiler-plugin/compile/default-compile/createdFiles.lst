@@ -1,0 +1,12 @@
+es\udc\rs\orders\client\service\rest\dto\ClientStatusDtoJaxb.class
+es\udc\rs\orders\client\service\rest\dto\ClientOrderDtoJaxb.class
+es\udc\rs\orders\client\service\rest\RestClientOrderServiceJson.class
+es\udc\rs\orders\client\service\rest\dto\ClientOrderLineDtoJaxb.class
+es\udc\rs\orders\client\service\ClientOrderService.class
+es\udc\rs\orders\client\service\ClientOrderServiceFactory.class
+es\udc\rs\orders\client\service\rest\dto\ClientOrderSummaryDtoJaxbList.class
+es\udc\rs\orders\client\service\rest\dto\ClientCustomerDtoJaxb.class
+es\udc\rs\orders\client\service\rest\RestClientOrderService.class
+es\udc\rs\orders\client\service\rest\dto\ClientOrderSummaryDtoJaxb.class
+es\udc\rs\orders\client\ui\OrderServiceClient.class
+es\udc\rs\orders\client\service\rest\RestClientOrderServiceXml.class

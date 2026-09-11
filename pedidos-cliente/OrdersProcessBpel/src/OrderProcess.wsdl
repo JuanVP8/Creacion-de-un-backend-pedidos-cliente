@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="OrderProcess"
+             targetNamespace="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess"
+             xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+             xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop">
+    
+    <types>
+        <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess">
+            <xsd:element name="OrderProcessOperationRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="orderID" type="xsd:long"/>
+                        <xsd:element name="customerID" type="xsd:long"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="OrderProcessOperationResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="billID" type="xsd:long"/>
+                        <xsd:element name="shipNumber" type="xsd:long"/>
+                        <xsd:element name="description" type="xsd:string"/>
+                        <xsd:element name="totalAmount" type="xsd:double"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="NotifyInventoryChangeRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="orderID" type="xsd:long"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="InvalidCustomerFault" type="xsd:string"/>
+        </xsd:schema>
+    </types>
+    
+    <!-- MESSAGES -->
+    <message name="OrderProcessOperationRequest">
+        <part name="orderID" type="xsd:long"/>
+        <part name="customerID" type="xsd:long"/>
+    </message>
+    <message name="OrderProcessOperationResponse">
+        <part name="billID" type="xsd:long"/>
+        <part name="shipNumber" type="xsd:long"/>
+        <part name="description" type="xsd:string"/>
+        <part name="totalAmount" type="xsd:double"/>
+    </message>
+    <message name="NotifyInventoryChangeRequest">
+        <part name="orderID" type="xsd:long"/>
+    </message>
+    <message name="InvalidCustomerFault">
+        <part name="error" type="xsd:string"/>
+    </message>
+    
+    <!-- PROPERTY DEFINITION FOR CORRELATION -->
+    <vprop:property name="orderIdProperty" type="xsd:long"/>
+    
+    <!-- PROPERTY ALIASES -->
+    <vprop:propertyAlias propertyName="tns:orderIdProperty" 
+                         messageType="tns:OrderProcessOperationRequest"
+                         part="orderID"/>
+    
+    <vprop:propertyAlias propertyName="tns:orderIdProperty" 
+                         messageType="tns:NotifyInventoryChangeRequest"
+                         part="orderID"/>
+    
+    <!-- PORT TYPE -->
+    <portType name="OrderProcessPortType">
+        <operation name="OrderProcessOperation">
+            <input name="input1" message="tns:OrderProcessOperationRequest"/>
+            <output name="output1" message="tns:OrderProcessOperationResponse"/>
+            <fault name="InvalidCustomer" message="tns:InvalidCustomerFault"/>
+        </operation>
+        <operation name="NotifyInventoryChange">
+            <input name="input2" message="tns:NotifyInventoryChangeRequest"/>
+        </operation>
+    </portType>
+    
+    <!-- PARTNER LINK TYPE -->
+    <plnk:partnerLinkType name="OrderProcess">
+        <plnk:role name="OrderProcessPortTypeRole" portType="tns:OrderProcessPortType"/>
+    </plnk:partnerLinkType>
+</definitions>

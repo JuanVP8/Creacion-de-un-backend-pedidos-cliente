@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<process
+    name="ordersProcessBpel"
+    targetNamespace="http://enterprise.netbeans.org/bpel/OrdersProcessBpel/ordersProcessBpel"
+    xmlns:tns="http://enterprise.netbeans.org/bpel/OrdersProcessBpel/ordersProcessBpel"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
+    xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://rs.udc.es/billing" xmlns:ns3="http://rs.udc.es/shipping" xmlns:ns2="http://rs.udc.es/orders" xmlns:ns1="http://rs.udc.es/inventory" xmlns:ns4="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess">
+    <import namespace="http://rs.udc.es/billing" location="BillingService_schema1.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://rs.udc.es/shipping" location="ShippingService_schema1.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://rs.udc.es/orders" location="OrderService_schema1.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://rs.udc.es/inventory" location="InventoryService_schema1.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://rs.udc.es/shipping" location="ShippingService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://rs.udc.es/inventory" location="InventoryService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://rs.udc.es/orders" location="OrderService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://rs.udc.es/billing" location="BillingService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess" location="OrderProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/OrderServiceWrapper" location="OrderServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/InventoryServiceWrapper" location="InventoryServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/BillingServiceWrapper" location="BillingServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/ShippingServiceWrapper" location="ShippingServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="OrderPL" xmlns:tns="http://enterprise.netbeans.org/bpel/OrderServiceWrapper" partnerLinkType="tns:OrderProviderLinkType" partnerRole="OrderProviderRole"/>
+        <partnerLink name="InventoryPL" xmlns:tns="http://enterprise.netbeans.org/bpel/InventoryServiceWrapper" partnerLinkType="tns:InventoryProviderLinkType" partnerRole="InventoryProviderRole"/>
+        <partnerLink name="BillingPL" xmlns:tns="http://enterprise.netbeans.org/bpel/BillingServiceWrapper" partnerLinkType="tns:BillingProviderLinkType" partnerRole="BillingProviderRole"/>
+        <partnerLink name="ShippingPL" xmlns:tns="http://enterprise.netbeans.org/bpel/ShippingServiceWrapper" partnerLinkType="tns:ShippingProviderLinkType" partnerRole="ShippingProviderRole"/>
+        <partnerLink name="ClientPL" xmlns:tns="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess" partnerLinkType="tns:OrderProcess" myRole="OrderProcessPortTypeRole"/>
+    </partnerLinks>
+    <variables>
+        <variable name="notifyInvChange" messageType="ns4:NotifyInventoryChangeRequest"/>
+        <variable name="processOrderIn" messageType="ns4:OrderProcessOperationRequest"/>
+        <variable name="description" type="xs:string"/>
+        <variable name="totalAmount" type="xs:double"/>
+        <variable name="checkInvResp" messageType="ns1:checkInventoryResponse"/>
+        <variable name="checkInvReq" messageType="ns1:checkInventory"/>
+        <variable name="changeStatusResp" messageType="ns2:changeStatusResponse"/>
+        <variable name="changeStatusReq" messageType="ns2:changeStatus"/>
+        <variable name="findOrderResp" messageType="ns2:findOrderResponse">
+            <sxed:editor>
+                <sxed:predicate path="$findOrderResp.parameters/return/orderLines[$i]" source="from"/>
+            </sxed:editor>
+        </variable>
+        <variable name="findOrderReq" messageType="ns2:findOrder"/>
+        <variable name="processOrderOut" messageType="ns4:OrderProcessOperationResponse"/>
+    </variables>
+    <sequence>
+        <receive name="Receive1" createInstance="yes" partnerLink="ClientPL" operation="OrderProcessOperation" portType="ns4:OrderProcessPortType" variable="processOrderIn"/>
+        <assign name="Assign3">
+            <copy>
+                <from>0</from>
+                <to variable="totalAmount"/>
+            </copy>
+            <copy>
+                <from variable="processOrderIn" part="orderID"/>
+                <to>$findOrderReq.parameters/orderId</to>
+            </copy>
+        </assign>
+        <invoke name="Invoke1" partnerLink="OrderPL" operation="findOrder" portType="ns2:OrderProvider" inputVariable="findOrderReq" outputVariable="findOrderResp"/>
+        <if name="If1">
+            <condition>$processOrderIn.customerID != $findOrderResp.parameters/return/customerId</condition>
+            <sequence name="Sequence5">
+                <assign name="Assign11">
+                    <copy>
+                        <from variable="description"/>
+                        <to variable="processOrderOut" part="description"/>
+                    </copy>
+                        <copy>
+                        <from variable="totalAmount"/>
+                        <to variable="processOrderOut" part="totalAmount"/>
+                    </copy>
+                </assign>
+                <reply name="Reply3" partnerLink="ClientPL" operation="OrderProcessOperation" portType="ns4:OrderProcessPortType" variable="processOrderOut"/>
+                <exit name="Exit1"/>
+            </sequence>
+        </if>
+        <sequence name="Sequence1">
+            <assign name="processing">
+                    <copy>
+                        <from>$findOrderResp.parameters/return/orderId</from>
+                        <to>$changeStatusReq.parameters/orderId</to>
+                    </copy>
+                        <copy>
+                        <from>'PROCESSING'</from>
+                        <to>$changeStatusReq.parameters/orderStatus</to>
+                    </copy>
+                </assign>
+                <invoke name="changestatus" partnerLink="OrderPL" operation="changeStatus" portType="ns2:OrderProvider" inputVariable="changeStatusReq" outputVariable="changeStatusResp"/>
+                <assign name="descYamount">
+                    <copy>
+                        <from>''</from>
+                        <to variable="description"/>
+                    </copy>
+                        <copy>
+                        <from>0</from>
+                        <to variable="totalAmount"/>
+                    </copy>
+                </assign>
+                <forEach name="ForEach1" parallel="no" counterName="i">
+                    <startCounterValue>1</startCounterValue>
+                        <finalCounterValue>count($findOrderResp.parameters/return/orderLines)</finalCounterValue>
+                        <completionCondition>
+                        <branches/>
+                    </completionCondition>
+                        <scope name="Scope1">
+                        <sequence name="Sequence2">
+                            <assign name="checkinvreq">
+                                <copy>
+                                    <from>$findOrderResp.parameters/return/orderId</from>
+                                    <to>$checkInvReq.parameters/orderId</to>
+                                </copy>
+                                <copy>
+                                    <from>$findOrderResp.parameters/return/orderLines/productId</from>
+                                    <to>$checkInvReq.parameters/productId</to>
+                                </copy>
+                                <copy>
+                                    <from>$findOrderResp.parameters/return/orderLines/quantity</from>
+                                    <to>$checkInvReq.parameters/quantity</to>
+                                </copy>
+                            </assign>
+                            <if name="If2">
+                                <condition>true() = $checkInvResp.parameters/return</condition>
+                                <repeatUntil name="RepeatUntil1">
+                                    <sequence name="Sequence3">
+                                        <pick name="Pick1">
+                                            <onMessage partnerLink="ClientPL" operation="NotifyInventoryChange" portType="ns4:OrderProcessPortType" variable="notifyInvChange">
+                                                <invoke name="Invoke3" partnerLink="InventoryPL" operation="checkInventory" portType="ns1:InventoryProvider" inputVariable="checkInvReq" outputVariable="checkInvResp"/>
+                                            </onMessage>
+                                        </pick>
+                                    </sequence>
+                                    <condition>false() = $checkInvResp.parameters/return</condition>
+                                </repeatUntil>
+                            </if>
+                            <assign name="Assign1">
+                                <copy>
+                                    <from>$totalAmount + $findOrderResp.parameters/return/orderLines[$i]/price * $findOrderResp.parameters/return/orderLines[$i]/quantity
+                                        <sxed:editor>
+                                            <sxed:predicate path="$findOrderResp.parameters/return/orderLines[$i]" source="from"/>
+                                        </sxed:editor>
+                                    </from>
+                                    <to variable="totalAmount"/>
+                                </copy>
+                                <copy>
+                                    <from>concat($description, $findOrderResp.parameters/return/orderLines/productId, 'x', $findOrderResp.parameters/return/orderLines/quantity, ', ')</from>
+                                    <to variable="description"/>
+                                </copy>
+                            </assign>
+                        </sequence>
+                    </scope>
+                </forEach>
+                <assign name="Assign2">
+                    <copy>
+                        <from>'PROCESSED'</from>
+                        <to>$changeStatusReq.parameters/orderStatus</to>
+                    </copy>
+                </assign>
+                <invoke name="Invoke4" partnerLink="OrderPL" operation="changeStatus" portType="ns2:OrderProvider" inputVariable="changeStatusReq" outputVariable="changeStatusResp"/>
+                <assign name="Assign8">
+                    <copy>
+                        <from variable="description"/>
+                        <to variable="processOrderOut" part="description"/>
+                    </copy>
+                        <copy>
+                        <from variable="totalAmount"/>
+                        <to variable="processOrderOut" part="totalAmount"/>
+                    </copy>
+                </assign>
+                <reply name="Reply1" partnerLink="ClientPL" operation="OrderProcessOperation" portType="ns4:OrderProcessPortType" variable="processOrderOut"/>
+        </sequence>
+    </sequence>
+</process>

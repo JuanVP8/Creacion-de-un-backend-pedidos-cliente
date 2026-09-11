@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by XML-WS Runtime (https://github.com/eclipse-ee4j/metro-jax-ws). Runtime's version is XML-WS Runtime 4.0.3 git-revision#a57c222. --><xs:schema xmlns:tns="http://rs.udc.es/billing" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://rs.udc.es/billing">
+
+<xs:element name="createAndSendBill" type="tns:createAndSendBill"/>
+
+<xs:element name="createAndSendBillResponse" type="tns:createAndSendBillResponse"/>
+
+<xs:complexType name="createAndSendBill">
+<xs:sequence>
+<xs:element name="orderId" type="xs:long" minOccurs="0"/>
+<xs:element name="clientId" type="xs:long" minOccurs="0"/>
+<xs:element name="description" type="xs:string" minOccurs="0"/>
+<xs:element name="totalPrice" type="xs:double"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createAndSendBillResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:billSummary" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="billSummary">
+<xs:sequence>
+<xs:element name="amount" type="xs:double"/>
+<xs:element name="billId" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

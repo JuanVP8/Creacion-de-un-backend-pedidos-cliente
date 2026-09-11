@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<process
+    name="ordersProcessBpel"
+    targetNamespace="http://enterprise.netbeans.org/bpel/OrdersProcessBpel/ordersProcessBpel"
+    xmlns:tns="http://enterprise.netbeans.org/bpel/OrdersProcessBpel/ordersProcessBpel"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
+    xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" 
+    xmlns:ns0="http://rs.udc.es/billing" 
+    xmlns:ns1="http://rs.udc.es/inventory" 
+    xmlns:ns2="http://rs.udc.es/orders" 
+    xmlns:ns3="http://rs.udc.es/shipping" 
+    xmlns:ns4="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess">
+    
+    <!-- IMPORTS -->
+    <import namespace="http://rs.udc.es/billing" location="BillingService_schema1.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://rs.udc.es/shipping" location="ShippingService_schema1.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://rs.udc.es/orders" location="OrderService_schema1.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://rs.udc.es/inventory" location="InventoryService_schema1.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://rs.udc.es/shipping" location="ShippingService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://rs.udc.es/inventory" location="InventoryService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://rs.udc.es/orders" location="OrderService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://rs.udc.es/billing" location="BillingService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess" location="OrderProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/OrderServiceWrapper" location="OrderServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/InventoryServiceWrapper" location="InventoryServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/BillingServiceWrapper" location="BillingServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/ShippingServiceWrapper" location="ShippingServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    
+    <!-- PARTNER LINKS -->
+    <partnerLinks>
+        <partnerLink name="OrderPL" xmlns:tns="http://enterprise.netbeans.org/bpel/OrderServiceWrapper" partnerLinkType="tns:OrderProviderLinkType" partnerRole="OrderProviderRole"/>
+        <partnerLink name="InventoryPL" xmlns:tns="http://enterprise.netbeans.org/bpel/InventoryServiceWrapper" partnerLinkType="tns:InventoryProviderLinkType" partnerRole="InventoryProviderRole"/>
+        <partnerLink name="BillingPL" xmlns:tns="http://enterprise.netbeans.org/bpel/BillingServiceWrapper" partnerLinkType="tns:BillingProviderLinkType" partnerRole="BillingProviderRole"/>
+        <partnerLink name="ShippingPL" xmlns:tns="http://enterprise.netbeans.org/bpel/ShippingServiceWrapper" partnerLinkType="tns:ShippingProviderLinkType" partnerRole="ShippingProviderRole"/>
+        <partnerLink name="ClientPL" xmlns:tns="http://j2ee.netbeans.org/wsdl/OrdersProcessBpel/src/OrderProcess" partnerLinkType="tns:OrderProcess" myRole="OrderProcessPortTypeRole"/>
+    </partnerLinks>
+    
+    <!-- VARIABLES -->
+    <variables>
+        <!-- Variables de entrada/salida principales -->
+        <variable name="processOrderIn" messageType="ns4:OrderProcessOperationRequest"/>
+        <variable name="processOrderOut" messageType="ns4:OrderProcessOperationResponse"/>
+        
+        <!-- Variables para OrderService -->
+        <variable name="findOrderReq" messageType="ns2:findOrder"/>
+        <variable name="findOrderResp" messageType="ns2:findOrderResponse"/>
+        <variable name="changeStatusReq" messageType="ns2:changeStatus"/>
+        <variable name="changeStatusResp" messageType="ns2:changeStatusResponse"/>
+        
+        <!-- Variables para InventoryService -->
+        <variable name="checkInvReq" messageType="ns1:checkInventory"/>
+        <variable name="checkInvResp" messageType="ns1:checkInventoryResponse"/>
+        <variable name="notifyInvChange" messageType="ns4:NotifyInventoryChangeRequest"/>
+        
+        <!-- Variables para BillingService -->
+        <variable name="createBillReq" messageType="ns0:createAndSendBill"/>
+        <variable name="createBillResp" messageType="ns0:createAndSendBillResponse"/>
+        
+        <!-- Variables para ShippingService -->
+        <variable name="shipOrderReq" messageType="ns3:shipOrder"/>
+        <variable name="shipOrderResp" messageType="ns3:shipOrderResponse"/>
+        
+        <!-- Variables auxiliares -->
+        <variable name="description" type="xs:string"/>
+        <variable name="totalAmount" type="xs:double"/>
+    </variables>
+    
+    <!-- CORRELATION SETS -->
+    <correlationSets>
+        <correlationSet name="OrderCorrelation" properties="ns4:orderIdProperty"/>
+    </correlationSets>
+    
+    <!-- FLUJO PRINCIPAL -->
+    <sequence>
+        <!-- 1. RECIBIR PETICIÓN (CON INICIALIZACIÓN DE CORRELACIÓN) -->
+        <receive name="ReceiveOrder" 
+                 createInstance="yes" 
+                 partnerLink="ClientPL" 
+                 operation="OrderProcessOperation" 
+                 portType="ns4:OrderProcessPortType" 
+                 variable="processOrderIn">
+            <correlations>
+                <correlation set="OrderCorrelation" initiate="yes"/>
+            </correlations>
+        </receive>
+        
+        <!-- 2. OBTENER DATOS DEL PEDIDO -->
+        <assign name="PrepareFindOrder">
+            <copy>
+                <from variable="processOrderIn" part="orderID"/>
+                <to>$findOrderReq.parameters/orderId</to>
+            </copy>
+        </assign>
+        
+        <invoke name="FindOrder" 
+                partnerLink="OrderPL" 
+                operation="findOrder" 
+                portType="ns2:OrderProvider" 
+                inputVariable="findOrderReq" 
+                outputVariable="findOrderResp"/>
+        
+        <!-- 3. VALIDAR CLIENTE -->
+        <if name="ValidateCustomer">
+            <condition>$processOrderIn.customerID != $findOrderResp.parameters/return/customerId</condition>
+            <throw name="ThrowInvalidCustomer" faultName="tns:InvalidCustomerFault"/>
+        </if>
+        
+        <!-- 4. CAMBIAR ESTADO A PROCESSING -->
+        <assign name="PrepareProcessing">
+            <copy>
+                <from>$findOrderResp.parameters/return/orderId</from>
+                <to>$changeStatusReq.parameters/orderId</to>
+            </copy>
+            <copy>
+                <from>'PROCESSING'</from>
+                <to>$changeStatusReq.parameters/orderStatus</to>
+            </copy>
+        </assign>
+        
+        <invoke name="ChangeToProcessing" 
+                partnerLink="OrderPL" 
+                operation="changeStatus" 
+                portType="ns2:OrderProvider" 
+                inputVariable="changeStatusReq" 
+                outputVariable="changeStatusResp"/>
+        
+        <!-- 5. INICIALIZAR VARIABLES ACUMULADORAS -->
+        <assign name="InitializeVariables">
+            <copy>
+                <from>''</from>
+                <to variable="description"/>
+            </copy>
+            <copy>
+                <from>0.0</from>
+                <to variable="totalAmount"/>
+            </copy>
+        </assign>
+        
+        <!-- 6. PROCESAR LÍNEAS DEL PEDIDO -->
+        <forEach name="ProcessOrderLines" parallel="no" counterName="i">
+            <startCounterValue>1</startCounterValue>
+            <finalCounterValue>count($findOrderResp.parameters/return/orderLines)</finalCounterValue>
+            <scope name="ScopeOrderLine">
+                <sequence name="ProcessLine">
+                    <!-- 6.1. PREPARAR REQUEST PARA CHECK INVENTORY -->
+                    <assign name="PrepareCheckInventory">
+                        <copy>
+                            <from>$findOrderResp.parameters/return/orderId</from>
+                            <to>$checkInvReq.parameters/orderId</to>
+                        </copy>
+                        <copy>
+                            <from>$findOrderResp.parameters/return/orderLines[$i]/productId</from>
+                            <to>$checkInvReq.parameters/productId</to>
+                        </copy>
+                        <copy>
+                            <from>$findOrderResp.parameters/return/orderLines[$i]/quantity</from>
+                            <to>$checkInvReq.parameters/quantity</to>
+                        </copy>
+                    </assign>
+                    
+                    <!-- 6.2. PRIMERA VERIFICACIÓN DE INVENTARIO -->
+                    <invoke name="CheckInventory" 
+                            partnerLink="InventoryPL" 
+                            operation="checkInventory" 
+                            portType="ns1:InventoryProvider" 
+                            inputVariable="checkInvReq" 
+                            outputVariable="checkInvResp"/>
+                    
+                    <!-- 6.3. ESPERAR SI NO HAY INVENTARIO SUFICIENTE -->
+                    <while name="WaitForInventory">
+                        <condition>$checkInvResp.parameters/return = false()</condition>
+                        <sequence name="WaitSequence">
+                            <!-- Esperar notificación de cambio en inventario (CON CORRELACIÓN) -->
+                            <pick name="PickNotification">
+                                <onMessage partnerLink="ClientPL" 
+                                           operation="NotifyInventoryChange" 
+                                           portType="ns4:OrderProcessPortType" 
+                                           variable="notifyInvChange">
+                                    <correlations>
+                                        <correlation set="OrderCorrelation" initiate="no"/>
+                                    </correlations>
+                                    <empty name="NotificationReceived"/>
+                                </onMessage>
+                            </pick>
+                            
+                            <!-- Reintentar verificación de inventario -->
+                            <invoke name="RecheckInventory" 
+                                    partnerLink="InventoryPL" 
+                                    operation="checkInventory" 
+                                    portType="ns1:InventoryProvider" 
+                                    inputVariable="checkInvReq" 
+                                    outputVariable="checkInvResp"/>
+                        </sequence>
+                    </while>
+                    
+                    <!-- 6.4. ACUMULAR PRECIO Y DESCRIPCIÓN -->
+                    <assign name="AccumulateTotals">
+                        <copy>
+                            <from>$totalAmount + $findOrderResp.parameters/return/orderLines[$i]/price * $findOrderResp.parameters/return/orderLines[$i]/quantity</from>
+                            <to variable="totalAmount"/>
+                        </copy>
+                        <copy>
+                            <from>concat($description, $findOrderResp.parameters/return/orderLines[$i]/productId, 'x', $findOrderResp.parameters/return/orderLines[$i]/quantity, ', ')</from>
+                            <to variable="description"/>
+                        </copy>
+                    </assign>
+                </sequence>
+            </scope>
+        </forEach>
+        
+        <!-- 7. PROCESAMIENTO PARALELO: FACTURACIÓN Y ENVÍO -->
+        <flow name="ParallelProcessing">
+            <!-- 7.1. SECUENCIA DE FACTURACIÓN -->
+            <sequence name="BillingSequence">
+                <assign name="PrepareBilling">
+                    <copy>
+                        <from>$findOrderResp.parameters/return/orderId</from>
+                        <to>$createBillReq.parameters/orderId</to>
+                    </copy>
+                    <copy>
+                        <from variable="description"/>
+                        <to>$createBillReq.parameters/description</to>
+                    </copy>
+                    <copy>
+                        <from variable="totalAmount"/>
+                        <to>$createBillReq.parameters/totalPrice</to>
+                    </copy>
+                    <copy>
+                        <from variable="processOrderIn" part="orderID"/>
+                        <to>$createBillReq.parameters/clientId</to>
+                    </copy>
+                </assign>
+                
+                <invoke name="InvokeBilling" 
+                        partnerLink="BillingPL" 
+                        operation="createAndSendBill" 
+                        portType="ns0:BillingProvider" 
+                        inputVariable="createBillReq" 
+                        outputVariable="createBillResp"/>
+            </sequence>
+            
+            <!-- 7.2. SECUENCIA DE ENVÍO -->
+            <sequence name="ShippingSequence">
+                <assign name="PrepareShipping">
+                    <copy>
+                        <from>$findOrderResp.parameters/return/orderId</from>
+                        <to>$shipOrderReq.parameters/orderId</to>
+                    </copy>
+                </assign>
+                
+                <invoke name="InvokeShipping" 
+                        partnerLink="ShippingPL" 
+                        operation="shipOrder" 
+                        portType="ns3:ShippingProvider" 
+                        inputVariable="shipOrderReq" 
+                        outputVariable="shipOrderResp"/>
+            </sequence>
+        </flow>
+        
+        <!-- 8. CAMBIAR ESTADO A PROCESSED -->
+        <assign name="PrepareProcessed">
+            <copy>
+                <from>'PROCESSED'</from>
+                <to>$changeStatusReq.parameters/orderStatus</to>
+            </copy>
+        </assign>
+        
+        <invoke name="ChangeToProcessed" 
+                partnerLink="OrderPL" 
+                operation="changeStatus" 
+                portType="ns2:OrderProvider" 
+                inputVariable="changeStatusReq" 
+                outputVariable="changeStatusResp"/>
+        
+        <!-- 9. PREPARAR RESPUESTA FINAL -->
+        
+        <!-- 10. ENVIAR RESPUESTA -->
+        <assign name="PrepareResponse">
+            <copy>
+                <from>$createBillResp.parameters/return/billId</from>
+                <to variable="processOrderOut" part="billId"/>
+            </copy>
+            <copy>
+                <from>$shipOrderResp.parameters/return</from>
+                <to variable="processOrderOut" part="shipNumber"/>
+            </copy>
+            <copy>
+                <from variable="description"/>
+                <to variable="processOrderOut" part="description"/>
+            </copy>
+            <copy>
+                <from>$createBillResp.parameters/return/amount</from>
+                <to variable="processOrderOut" part="totalAmount"/>
+            </copy>
+        </assign>
+
+        <reply name="ReplySuccess" 
+               partnerLink="ClientPL" 
+               operation="OrderProcessOperation" 
+               portType="ns4:OrderProcessPortType" 
+               variable="processOrderOut"/>
+    </sequence>
+</process>
