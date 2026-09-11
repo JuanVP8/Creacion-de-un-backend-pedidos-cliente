@@ -1,0 +1,12 @@
+es\udc\rs\orders\model\orderservice\OrderServiceFactory.class
+es\udc\rs\orders\model\exceptions\DuplicateInstanceException.class
+es\udc\rs\orders\model\order\OrderStatus.class
+es\udc\rs\orders\model\customer\Customer.class
+es\udc\rs\orders\model\orderservice\MockOrderService.class
+es\udc\rs\orders\model\exceptions\InvalidOrderStateException.class
+es\udc\rs\orders\model\exceptions\InstanceNotFoundException.class
+es\udc\rs\orders\model\order\OrderLine.class
+es\udc\rs\orders\model\orderservice\OrderService.class
+es\udc\rs\orders\model\exceptions\InputValidationException.class
+es\udc\rs\orders\model\order\Order.class
+es\udc\rs\orders\model\exceptions\CustomerHasOrdersException.class

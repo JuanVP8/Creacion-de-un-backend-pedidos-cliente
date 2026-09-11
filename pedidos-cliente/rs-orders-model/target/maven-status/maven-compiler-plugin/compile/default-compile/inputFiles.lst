@@ -1,0 +1,12 @@
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\customer\Customer.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\exceptions\CustomerHasOrdersException.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\exceptions\DuplicateInstanceException.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\exceptions\InputValidationException.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\exceptions\InstanceNotFoundException.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\exceptions\InvalidOrderStateException.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\order\Order.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\order\OrderLine.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\order\OrderStatus.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\orderservice\MockOrderService.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\orderservice\OrderService.java
+C:\Users\usuario\Documents\ia-15-1\rs-orders-model\src\main\java\es\udc\rs\orders\model\orderservice\OrderServiceFactory.java
